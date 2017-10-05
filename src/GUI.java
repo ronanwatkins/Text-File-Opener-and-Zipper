@@ -16,6 +16,8 @@ import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import static javax.swing.SwingUtilities.updateComponentTreeUI;
+
 public class GUI extends JPanel implements ActionListener {
 
     private JTextArea textArea;
@@ -33,9 +35,17 @@ public class GUI extends JPanel implements ActionListener {
 
     public static void createAndShowGUI(){
         LOGGER.entering(GUI.class.getName(), "createAndShowGUI");
+
         JFrame frame = new JFrame("File opener");
         frame.setSize(600, 500);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        try {
+            UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+            updateComponentTreeUI(frame);
+        } catch (Exception ee) {
+            ee.printStackTrace();
+        }
 
         GUI gui = new GUI();
 
@@ -253,7 +263,7 @@ public class GUI extends JPanel implements ActionListener {
             @Override
             protected void process(List<String> chunks) {
                 LOGGER.entering(GUI.class.getName(), "workerLoadFile::process");
-                for (String lines : chunks) {
+                for(String lines : chunks) {
                     textArea.append(lines + "\r\n");
                 }
                 int progress = workerLoadFile.getProgress();
